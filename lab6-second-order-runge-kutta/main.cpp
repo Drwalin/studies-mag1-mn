@@ -21,7 +21,7 @@ Real fabs(Real v) {
 
 
 Real f(Tri p) {
-	return -sin(p.x);
+	return -sin(p.y) -0.5*p.yb + 0.9 * cos(0.45*p.x);
 }
 Real f(Real x, Real y, Real yb) {
 	return f({x,y,yb});
@@ -51,24 +51,24 @@ Tri ImprovedEuler(Tri arg, Real dx) {
 	return r;
 }
 
-Tri RungeKuttaReferenceImplementation(Tri arg, Real dx) {
-	Real f0, f1, f2, f3;
-	Tri r = arg;
-	r.x += dx;
-	
-	Real f00 = arg.yb;
-	Real f01 = f(arg);
-	Real f10 = arg.yb + f01*dx/2;
-	Real f11 = f(arg.x+dx/2, arg.y+f00*dx/2, arg.yb+f01*dx/2);
-	Real f20 = arg.yb + f11*dx/2;
-	Real f21 = f(arg.x+dx/2, arg.y+f10*dx/2, arg.yb+f11*dx/2);
-	Real f30 = arg.yb+f21*dx;
-	Real f31 = f(arg.x+dx, arg.y+f20*dx, arg.yb+f21*dx);
-	
-	r.y += (f00 + 2*f10 + 2*f20 + f30)*dx/6;
-	r.yb += (f01 + 2*f11 + 2*f21 + f31)*dx/6;
-	return r;
-}
+// Tri RungeKuttaReferenceImplementation(Tri arg, Real dx) {
+// 	Real f0, f1, f2, f3;
+// 	Tri r = arg;
+// 	r.x += dx;
+// 	
+// 	Real f00 = arg.yb;
+// 	Real f01 = f(arg);
+// 	Real f10 = arg.yb + f01*dx/2;
+// 	Real f11 = f(arg.x+dx/2, arg.y+f00*dx/2, arg.yb+f01*dx/2);
+// 	Real f20 = arg.yb + f11*dx/2;
+// 	Real f21 = f(arg.x+dx/2, arg.y+f10*dx/2, arg.yb+f11*dx/2);
+// 	Real f30 = arg.yb+f21*dx;
+// 	Real f31 = f(arg.x+dx, arg.y+f20*dx, arg.yb+f21*dx);
+// 	
+// 	r.y += (f00 + 2*f10 + 2*f20 + f30)*dx/6;
+// 	r.yb += (f01 + 2*f11 + 2*f21 + f31)*dx/6;
+// 	return r;
+// }
 
 Tri RungeKutta(Tri arg, Real dx) {
 	Tri r = arg;
@@ -127,7 +127,10 @@ void PrintSolutions(const std::vector<std::vector<Tri>>& sol) {
 }
 
 int main() {
-	auto sol = SolveSecondOrderMethods({0,1.4,0}, 0.1, 3.0, {RungeKuttaReferenceImplementation, RungeKutta});
+	auto sol = SolveSecondOrderMethods({0,1.4,0}, 0.1, 3.0, {
+// 		RungeKuttaReferenceImplementation,
+		RungeKutta});
+	
 	PrintSolutions(sol);
 	
 	return 0;
